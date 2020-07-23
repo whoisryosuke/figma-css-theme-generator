@@ -1,25 +1,23 @@
-# Styled Theme Generator
+# Figma CSS Theme Generator
 
-Figma plugin that generates a CSS in JS theme from your document's text and color styles, or lets you import a theme to generate Figma styles.
+Figma plugin that generates CSS custom properties from your document's text and color styles.
 
 ## What does it do?
 
-> **Figma Styles** ♻️ **CSS in JS Theme**
+> **Figma Styles** ♻️ **CSS Custom Properties**
 
-This plugin can **generate a CSS in JS theme file** (according to [the System UI specification](https://system-ui.com/theme)) from your Figma document's color and text styles. It parses all the styles and generates a JSON object you can use in your CSS in JS theme file. This way you can take your design to code and remove a layer of translation between designers and developers.
-
-This plugin can **generate Figma styles** from a CSS in JS theme file. It makes it easy to import pre-existing themes from CSS in JS libraries, eliminate the boilerplate of setting up a Figma style guide, and get to prototyping faster.
+This plugin can **generate CSS custom properties** from your Figma document's color and text styles. It parses all the styles and generates a CSS stylesheet you can use in your CSS-based projects. This way you can take your design to code and remove a layer of translation between designers and developers.
 
 ## Development
 
-This project uses Typescript and VSCode's built-in "watch" mode that compiles Typescript files according to the `tsconfig.json`.
-
-> If you're not using VSCode, you will have to run the Typescript build command on watch mode manually.
+This project uses Typescript and Webpack for compiling code to a production bundle.
 
 ### Getting Started
 
-1. Install dependencies: `yarn` or `npm i`
-2. `yarn dev`
+1. Install Figma plugin using `manifest.json` in project repo.
+1. Install dependencies: `yarn`
+1. Run Webpack in "watch" mode: `yarn dev`
+1. Run the plugin in Figma
 
 ### Figma Guide
 
