@@ -167,6 +167,7 @@ figma.ui.onmessage = async (msg) => {
     // e.g. we can change color from RGB to HEX
     const flagColorType: string = "hex";
     const flagLowercaseNames = true;
+    const namespace = msg.namespace ? msg.namespace : "spky";
 
     // Get text styles to generate text variants
     const textStyles = figma.getLocalTextStyles();
@@ -177,19 +178,21 @@ figma.ui.onmessage = async (msg) => {
       .map(({ fontSize }) => fontSize)
       .sort((a, b) => a - b);
     // Remove dupes
-    const fontSizes = fontSizesWithDupes.filter(
-      (item, index) => fontSizesWithDupes.indexOf(item) == index
-    );
+    const fontSizes = fontSizesWithDupes
+      .filter((item, index) => fontSizesWithDupes.indexOf(item) == index)
+      .map((item, index) => `--${namespace}-font-sizes-${index}: ${item}px;`);
 
     // Parse font families
     // Create array of font sizes and sort numerically by least to most
-    const fontFamilies = textStyles
-      .map(({ fontName }) => fontName!.family)
+    const fontFamiliesWithDupes = textStyles.map(
+      ({ fontName }) => fontName!.family
+    );
+    const fontFamilies = fontFamiliesWithDupes
+      .filter((item, index) => fontFamiliesWithDupes.indexOf(item) == index)
       .sort()
-      .reduce((map, obj) => {
-        map[obj.toLowerCase()] = obj;
-        return map;
-      }, {});
+      .map(
+        (item) => `--${namespace}-font-family-${item.toLowerCase()}: ${item};`
+      );
 
     // Grab index of font size
     function getFontSize(fontSize) {
@@ -231,22 +234,14 @@ figma.ui.onmessage = async (msg) => {
     const colors = figma.getLocalPaintStyles();
 
     // Create container for parsed colors
-    let finalColors = {};
+    let finalColors = [];
 
     // Loop through colors and convert Figma API to theme/CSS format
     colors.map(({ paints, type, remote, name }) => {
       // Parse name from Figma slash `/` to object `.`
       let filteredName = name;
       if (flagLowercaseNames) filteredName = filteredName.toLowerCase();
-      const colorArray = filteredName.split("/");
-
-      const colorNameReducer = (accumulator, currentValue, index) => {
-        if (index == colorArray.length) {
-          return walkObject(accumulator, "");
-        }
-        return walkObject(accumulator, currentValue, true);
-      };
-      let colorObject = colorArray.reduce(colorNameReducer, {});
+      const colorName = filteredName.replace("/", "-");
 
       // Parse Figma Paint API to CSS color properties
       paints?.forEach((paint) => {
@@ -276,11 +271,8 @@ figma.ui.onmessage = async (msg) => {
               break;
           }
           // Add to last nested object parameter
-          colorObject = walkObject(colorObject, newColor);
+          finalColors.push(`--${namespace}-colors-${colorName}: ${newColor};`);
         }
-
-        // Use deep merge to combine current color with all colors
-        finalColors = merge(finalColors, colorObject);
       });
     });
 
@@ -291,7 +283,11 @@ figma.ui.onmessage = async (msg) => {
       colors: finalColors,
     };
 
-    figma.ui.postMessage(JSON.stringify(theme, null, 2));
+    const combineCSS = [...fontSizes, ...fontFamilies, ...finalColors];
+
+    const finalCSS = combineCSS.join("\n");
+
+    figma.ui.postMessage(finalCSS);
   }
 
   // Make sure to close the plugin when you're done. Otherwise the plugin will

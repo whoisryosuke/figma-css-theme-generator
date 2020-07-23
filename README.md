@@ -19,10 +19,7 @@ This project uses Typescript and VSCode's built-in "watch" mode that compiles Ty
 ### Getting Started
 
 1. Install dependencies: `yarn` or `npm i`
-2. In VSCode with the project folder open, press `SHIFT + CMD + B` (or `Control` instead of `CMD` for Windows) and run the `tsc: watch` command from the `tsconfig.json` file.
-3. Open Figma and import the plugin's `manifest.json` file.
-
-To run the plugin, go to the Figma desktop app and find the plugin in the top menu (Plugins > Development > styled-theme-generator).
+2. `yarn dev`
 
 ### Figma Guide
 

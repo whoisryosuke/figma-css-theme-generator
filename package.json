@@ -1,7 +1,7 @@
 {
-  "name": "styled-theme-generator",
+  "name": "figma-css-theme-generator",
   "version": "1.0.0",
-  "description": "Your Figma Plugin",
+  "description": "Figma plugin for generating CSS custom properties based off Figma styles",
   "main": "code.js",
   "scripts": {
     "start": "webpack --mode=development --watch",
